@@ -87,6 +87,13 @@ steps:
   - script: |
       reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
     displayName: "Create code coverage report"
+    condition: |
+      and
+      (
+        succeeded(),
+        eq(variables['Build.Reason'], 'PullRequest'),
+        eq(variables['System.PullRequest.TargetBranch'], 'master')
+      )
 
   - task: SonarCloudAnalyze@1
     displayName: "Run SonarCloud code analysis"
